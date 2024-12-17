@@ -13,6 +13,7 @@ export async function POST(request: Request) {
       message: `Received: ${text}`,
     });
   } catch (error) {
+    console.error("Error in generate-image route:", error);
     return NextResponse.json(
       { success: false, error: "Failed to process request" },
       { status: 500 }
