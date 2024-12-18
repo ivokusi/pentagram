@@ -30,12 +30,8 @@ export default function Home() {
   };
 
   return (
-    // TODO: Update the UI here to show the images generated
-    
-    <div className="min-h-screen flex flex-col justify-between p-8">
-      <main className="flex-1">{/* Main content can go here */}</main>
-
-      <footer className="w-full max-w-3xl mx-auto">
+    <div className="flex flex-col justify-between h-full p-8">
+      <div className="max-w-full">
         <form onSubmit={handleSubmit} className="w-full">
           <div className="flex gap-2">
             <input
@@ -55,7 +51,10 @@ export default function Home() {
             </button>
           </div>
         </form>
-      </footer>
+      </div>
+      <div className="flex-1">
+        {/* TODO: Add a section here to display generated images */}
+      </div>
     </div>
   );
 }
