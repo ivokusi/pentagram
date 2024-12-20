@@ -1,60 +1,52 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useUser } from "@clerk/clerk-react"
+import { RedirectToSignIn } from "@clerk/clerk-react"
 
-export default function Home() {
-  const [inputText, setInputText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+export default function LandingPage() {
+  const [redirectToSignIn, setRedirectToSignIn] = useState(false)
+  const { isSignedIn } = useUser()
+  const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/generate-image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text: inputText }),
-      });
-
-      const data = await response.json();
-      console.log(data);
-      setInputText("");
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
+  const handleCreateClick = () => {
+    if (isSignedIn) {
+      router.push("/create")
+    } else {
+      setRedirectToSignIn(true)
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col justify-between h-full p-8">
-      <div className="max-w-full">
-        <form onSubmit={handleSubmit} className="w-full">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={inputText}
-              onChange={e => setInputText(e.target.value)}
-              className="flex-1 p-3 rounded-lg bg-black/[.05] dark:bg-white/[.06] border border-black/[.08] dark:border-white/[.145] focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-              placeholder="Describe the image you want to generate..."
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="px-6 py-3 rounded-lg bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc] transition-colors disabled:opacity-50"
-            >
-              {isLoading ? "Generating..." : "Generate"}
-            </button>
-          </div>
-        </form>
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+      <h1 className="text-5xl font-bold mb-6">Welcome to Pentagram</h1>
+      
+      <div className="max-w-2xl mx-auto space-y-6">
+        <p className="text-xl text-gray-600 dark:text-gray-300">
+          Turn your ideas into reality. 
+        </p>
+        
+        <div className="flex justify-center space-x-4 mt-8">
+          <Button 
+            size="lg" 
+            className="text-lg px-8 py-4"
+            onClick={() => router.push("/explore")}
+          >
+            Explore
+          </Button>
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="text-lg px-8 py-4"
+            onClick={handleCreateClick}
+          >
+            Create
+          </Button>
+        </div>
       </div>
-      <div className="flex-1">
-        {/* TODO: Add a section here to display generated images */}
-      </div>
+      {redirectToSignIn && <RedirectToSignIn />}
     </div>
   );
 }

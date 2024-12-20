@@ -8,7 +8,6 @@ export async function POST(request: Request) {
     console.log("Received text:", text);
 
     // TODO: Call your Image Generation API here
-    // For now, we'll just echo back the text
 
     return NextResponse.json({
       success: true,
@@ -17,7 +16,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error in generate-image route:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to process request" },
+      { error: "Failed to process request" },
       { status: 500 }
     );
   }

@@ -1,31 +1,29 @@
-import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/app-sidebar'
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { ConvexClientProvider } from "@/utils/convex-client-provider"
+import { AppSidebar } from "@/components/app-sidebar"
+import { ClerkProvider } from "@clerk/nextjs";
+import { cookies } from "next/headers"
 import "./globals.css";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
+
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
+
   return (
-    <html lang="en">
+    <html>
       <body>
-        <SidebarProvider>
-          <div className="flex flex-1 h-screen overflow-hidden">
-            <AppSidebar />
-            <div className="flex-1 flex flex-col overflow-hidden transition-all ease-in-out duration-300 group-data-[state=collapsed]/sidebar:flex-[1_1_100%] p-5">
-              <header className="flex h-16 items-center gap-4 bg-background px-6">
-                <SidebarTrigger />
-                <h1 className="font-semibold">Explore</h1>
-              </header>
-              <main className="flex-1">
-                <SidebarInset className="h-full">
-                  {children}
-                </SidebarInset>
+        <ClerkProvider publishableKey="pk_test_bGliZXJhbC1sYXJrLTY1LmNsZXJrLmFjY291bnRzLmRldiQ">
+          <ConvexClientProvider>
+            <SidebarProvider defaultOpen={defaultOpen}>
+              <AppSidebar />
+              <SidebarTrigger className="m-5" />
+              <main className="flex-1 w-full">
+                {children}
               </main>
-            </div>
-          </div>
-        </SidebarProvider>
+            </SidebarProvider>
+          </ConvexClientProvider>
+        </ClerkProvider>
       </body>
     </html>
   )
